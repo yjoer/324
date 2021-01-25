@@ -181,10 +181,10 @@ function divideTriangle(a, b, c, count) {
 }
 
 function tetrahedron(a, b, c, d, n) {
-    divideTriangle(a, b, c, n);
-    divideTriangle(d, c, b, n);
-    divideTriangle(a, d, b, n);
-    divideTriangle(a, c, d, n);
+  divideTriangle(a, b, c, n);
+  divideTriangle(d, c, b, n);
+  divideTriangle(a, d, b, n);
+  divideTriangle(a, c, d, n);
 }
 
 //Texture mapping fo sphere
