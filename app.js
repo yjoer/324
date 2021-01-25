@@ -1,11 +1,11 @@
-//Initialize the image for texture mapping
+// Initialize the image for texture mapping
 var cubeImage = document.getElementById("cubeImage1");
 configureCubeTexture(cubeImage);
 
 var sphereImage = document.getElementById("sphereImage1");
 configureSphereTexture(sphereImage);
 
-//Image for texture mapping
+// Image for texture mapping
 document.getElementById("Image1").onclick = function () {
   cubeImage = document.getElementById("cubeImage1");
   configureCubeTexture(cubeImage);
@@ -53,49 +53,55 @@ document.getElementById("Image6").onclick = function () {
   sphereImage = document.getElementById("sphereImage6");
   configureSphereTexture(sphereImage);
 };
-//Function to get the material shininess
+
+// Function to get the material shininess
 document.getElementById("materialshininess").onchange = function () {
   let materialShininess = document.getElementById("materialshininess").value;
+
   gl.uniform1f(gl.getUniformLocation(program, "shininess"), materialShininess);
 };
 
-//Function to get the light position
+// Function to get the light position
 document.getElementById("lightpositions").onchange = function () {
-  var x = document.getElementById("lightpositions").value;
+  let x = document.getElementById("lightpositions").value;
   let lightPosition = vec4(x, 1.0, 1.0, 0.0);
+
   gl.uniform4fv(
     gl.getUniformLocation(program, "lightPosition"),
     flatten(lightPosition)
   );
 };
 
-//Function to get the ambient light
+// Function to get the ambient light
 document.getElementById("ambientLight").onchange = function () {
-  var x = document.getElementById("ambientLight").value;
+  let x = document.getElementById("ambientLight").value;
   let lightAmbient = vec4(x, x, 0.1, 1.0);
   let ambientProduct = mult(lightAmbient, materialAmbient);
+
   gl.uniform4fv(
     gl.getUniformLocation(program, "ambientProduct"),
     flatten(ambientProduct)
   );
 };
 
-//Function to get the diffuse light
+// Function to get the diffuse light
 document.getElementById("diffuseLight").onchange = function () {
-  var x = document.getElementById("diffuseLight").value;
+  let x = document.getElementById("diffuseLight").value;
   let lightDiffuse = vec4(x, x, 0.1, 1.0);
   let diffuseProduct = mult(lightDiffuse, materialDiffuse);
+
   gl.uniform4fv(
     gl.getUniformLocation(program, "diffuseProduct"),
     flatten(diffuseProduct)
   );
 };
 
-//Function to get the specular light
+// Function to get the specular light
 document.getElementById("specularLight").onchange = function () {
-  var x = document.getElementById("specularLight").value;
+  let x = document.getElementById("specularLight").value;
   let lightSpecular = vec4(x, x, 0.1, 1.0);
   let specularProduct = mult(lightSpecular, materialSpecular);
+
   gl.uniform4fv(
     gl.getUniformLocation(program, "specularProduct"),
     flatten(specularProduct)
