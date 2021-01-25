@@ -325,34 +325,34 @@ window.onload = function init() {
   render();
 };
 
-var render = function(){
-    gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+var render = function () {
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    projectionMatrix = ortho(left, right, bottom, itop, near, far);
-    gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix) );
+  projectionMatrix = ortho(left, right, bottom, itop, near, far);
+  gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
 
-    //draw cube, 36 points;
-    if (start){
-        modelViewMatrix = mult(rotate(-3 , 1,1,1), modelViewMatrix);
-        modelViewMatrix = mult(translate(2.5 ,0,0), modelViewMatrix);
-        start = false;
-    }else{
-        modelViewMatrix = mult(translate(-2.5 ,0,0), modelViewMatrix);
-        modelViewMatrix = mult(rotate(-3 , 1,1,1), modelViewMatrix);
-        modelViewMatrix = mult(translate(2.5 ,0,0), modelViewMatrix);
-    }
-    gl.uniform1i(gl.getUniformLocation(program, "texMode"), 0);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
-    gl.drawArrays( gl.TRIANGLES, 0, 36);
+  // Draw cube, 36 points
+  if (start) {
+    modelViewMatrix = mult(rotate(-3, 1, 1, 1), modelViewMatrix);
+    modelViewMatrix = mult(translate(2.5, 0, 0), modelViewMatrix);
+    start = false;
+  } else {
+    modelViewMatrix = mult(translate(-2.5, 0, 0), modelViewMatrix);
+    modelViewMatrix = mult(rotate(-3, 1, 1, 1), modelViewMatrix);
+    modelViewMatrix = mult(translate(2.5, 0, 0), modelViewMatrix);
+  }
+  gl.uniform1i(gl.getUniformLocation(program, "texMode"), 0);
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+  gl.drawArrays(gl.TRIANGLES, 0, 36);
 
-    // draw sphere, depends on the number of iterations
-    gl.uniform1i(gl.getUniformLocation(program, "texMode"), 1);
-    modelViewMatrix2 = mult(rotate(rotationSpeed, 0,1,1), modelViewMatrix2);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix2));
-    console.log(pointsArray.length);
-    for( var i=numVertices; i<index+numVertices; i+=3){
-        gl.drawArrays( gl.TRIANGLES, i, 3 );
-    }
+  // Draw sphere, depends on the number of iterations
+  gl.uniform1i(gl.getUniformLocation(program, "texMode"), 1);
+  modelViewMatrix2 = mult(rotate(rotationSpeed, 0, 1, 1), modelViewMatrix2);
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix2));
+  console.log(pointsArray.length);
+  for (var i = numVertices; i < index + numVertices; i += 3) {
+    gl.drawArrays(gl.TRIANGLES, i, 3);
+  }
 
-    window.requestAnimFrame(render);
-}
+  window.requestAnimFrame(render);
+};
