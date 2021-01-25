@@ -78,42 +78,43 @@ function configureCubeTexture(image) {
 }
 
 function quad(a, b, c, d) {
-    var t1 = subtract(vertices[b], vertices[a]);
-    var t2 = subtract(vertices[c], vertices[a]);
-    var normal = cross(t2, t1);
-    normal = vec4(normal);
-    normal = normalize(normal);
+  var t1 = subtract(vertices[b], vertices[a]);
+  var t2 = subtract(vertices[c], vertices[a]);
 
-    normalsArray.push(normal);
-    normalsArray.push(normal);
-    normalsArray.push(normal);
-    normalsArray.push(normal);
-    normalsArray.push(normal);
-    normalsArray.push(normal);
+  var normal = cross(t2, t1);
+  normal = vec4(normal);
+  normal = normalize(normal);
 
-     pointsArray.push(vertices[a]);
-     colorsArray.push(vertexColors[a]);
-     texCoordsArray.push(texCoord[0]);
+  normalsArray.push(normal);
+  normalsArray.push(normal);
+  normalsArray.push(normal);
+  normalsArray.push(normal);
+  normalsArray.push(normal);
+  normalsArray.push(normal);
 
-     pointsArray.push(vertices[b]);
-     colorsArray.push(vertexColors[a]);
-     texCoordsArray.push(texCoord[1]);
+  pointsArray.push(vertices[a]);
+  colorsArray.push(vertexColors[a]);
+  texCoordsArray.push(texCoord[0]);
 
-     pointsArray.push(vertices[c]);
-     colorsArray.push(vertexColors[a]);
-     texCoordsArray.push(texCoord[2]);
+  pointsArray.push(vertices[b]);
+  colorsArray.push(vertexColors[a]);
+  texCoordsArray.push(texCoord[1]);
 
-     pointsArray.push(vertices[a]);
-     colorsArray.push(vertexColors[a]);
-     texCoordsArray.push(texCoord[0]);
+  pointsArray.push(vertices[c]);
+  colorsArray.push(vertexColors[a]);
+  texCoordsArray.push(texCoord[2]);
 
-     pointsArray.push(vertices[c]);
-     colorsArray.push(vertexColors[a]);
-     texCoordsArray.push(texCoord[2]);
+  pointsArray.push(vertices[a]);
+  colorsArray.push(vertexColors[a]);
+  texCoordsArray.push(texCoord[0]);
 
-     pointsArray.push(vertices[d]);
-     colorsArray.push(vertexColors[a]);
-     texCoordsArray.push(texCoord[3]);
+  pointsArray.push(vertices[c]);
+  colorsArray.push(vertexColors[a]);
+  texCoordsArray.push(texCoord[2]);
+
+  pointsArray.push(vertices[d]);
+  colorsArray.push(vertexColors[a]);
+  texCoordsArray.push(texCoord[3]);
 }
 
 function colorCube()
