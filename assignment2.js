@@ -160,26 +160,24 @@ function triangle(a, b, c) {
   index += 3;
 }
 
-//Function for triangle division
+// Function for triangle division
 function divideTriangle(a, b, c, count) {
-    if ( count > 0 ) {
+  if (count > 0) {
+    var ab = mix(a, b, 0.5);
+    var ac = mix(a, c, 0.5);
+    var bc = mix(b, c, 0.5);
 
-        var ab = mix( a, b, 0.5);
-        var ac = mix( a, c, 0.5);
-        var bc = mix( b, c, 0.5);
+    ab = normalize(ab, true);
+    ac = normalize(ac, true);
+    bc = normalize(bc, true);
 
-        ab = normalize(ab, true);
-        ac = normalize(ac, true);
-        bc = normalize(bc, true);
-
-        divideTriangle( a, ab, ac, count - 1 );
-        divideTriangle( ab, b, bc, count - 1 );
-        divideTriangle( bc, c, ac, count - 1 );
-        divideTriangle( ab, bc, ac, count - 1 );
-    }
-    else {
-        triangle( a, b, c );
-    }
+    divideTriangle(a, ab, ac, count - 1);
+    divideTriangle(ab, b, bc, count - 1);
+    divideTriangle(bc, c, ac, count - 1);
+    divideTriangle(ab, bc, ac, count - 1);
+  } else {
+    triangle(a, b, c);
+  }
 }
 
 function tetrahedron(a, b, c, d, n) {
