@@ -64,7 +64,7 @@ function configureCubeTexture( image ) {
     gl.activeTexture(gl.TEXTURE0 + 0);
     gl.bindTexture( gl.TEXTURE_2D, cubeTexture );
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    
+
 	//upload image into texture;
     gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image );
     gl.generateMipmap( gl.TEXTURE_2D );
@@ -77,7 +77,7 @@ function quad(a, b, c, d) {
     var t1 = subtract(vertices[b], vertices[a]);
     var t2 = subtract(vertices[c], vertices[a]);
     var normal = cross(t2, t1);
-    var normal = vec4(normal);
+    normal = vec4(normal);
     normal = normalize(normal);
 
     normalsArray.push(normal);
@@ -202,7 +202,7 @@ var vertices = [
     vec4( -0.5,  0.5, -0.5, 1.0 ),
     vec4( 0.5,  0.5, -0.5, 1.0 ),
     vec4( 0.5, -0.5, -0.5, 1.0 ),
-    
+
 	//sphere
 	vec4(0.0, 0.0, -1.0,1),
 	vec4(0.0, 0.942809, 0.333333, 1),
@@ -235,12 +235,12 @@ window.onload = function init() {
 
     //generate cube vertices;
     colorCube();
-	
+
     //generate sphere vertices;
     tetrahedron(vertices[8], vertices[9], vertices[10], vertices[11], numTimesToSubdivide);
 
     //  Load shaders and initialize attribute buffers
-  
+
     program = initShaders( gl, "vertex-shader", "fragment-shader" );
 	gl.useProgram( program );
 
@@ -282,7 +282,7 @@ window.onload = function init() {
     var vTexCoord = gl.getAttribLocation( program, "vTexCoord" );
     gl.vertexAttribPointer( vTexCoord, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vTexCoord );
-	
+
 	//Initialize the image for texture mapping
     var cubeImage = document.getElementById("cubeImage1");
     configureCubeTexture( cubeImage );
@@ -294,15 +294,15 @@ window.onload = function init() {
 	document.getElementById("Image1").onclick = function(){
 		cubeImage = document.getElementById("cubeImage1");
         configureCubeTexture( cubeImage );
-		
+
 		sphereImage = document.getElementById("sphereImage1");
 		configureSphereTexture( sphereImage );
 	};
-	
+
 	document.getElementById("Image2").onclick = function(){
 		cubeImage = document.getElementById("cubeImage2");
         configureCubeTexture( cubeImage );
-		
+
 		sphereImage = document.getElementById("sphereImage2");
 		configureSphereTexture( sphereImage );
 	};
@@ -310,31 +310,31 @@ window.onload = function init() {
 	document.getElementById("Image3").onclick = function(){
 		cubeImage = document.getElementById("cubeImage3");
         configureCubeTexture( cubeImage );
-		
+
 		sphereImage = document.getElementById("sphereImage3");
 		configureSphereTexture( sphereImage );
 	};
-	
+
 	document.getElementById("Image4").onclick = function(){
 		cubeImage = document.getElementById("cubeImage4");
         configureCubeTexture( cubeImage );
-		
+
 		sphereImage = document.getElementById("sphereImage4");
 		configureSphereTexture( sphereImage );
 	};
-	
+
 	document.getElementById("Image5").onclick = function(){
 		cubeImage = document.getElementById("cubeImage5");
         configureCubeTexture( cubeImage );
-		
+
 		sphereImage = document.getElementById("sphereImage5");
 		configureSphereTexture( sphereImage );
 	};
-	
+
 	document.getElementById("Image6").onclick = function(){
 		cubeImage = document.getElementById("cubeImage6");
         configureCubeTexture( cubeImage );
-		
+
 		sphereImage = document.getElementById("sphereImage6");
 		configureSphereTexture( sphereImage );
 	};
@@ -343,14 +343,14 @@ window.onload = function init() {
 		materialShininess = document.getElementById("materialshininess").value;
 		gl.uniform1f( gl.getUniformLocation(program,"shininess"),materialShininess );
 	};
-	
+
 	//Function to get the light position
 	document.getElementById("lightpositions").onchange = function() {
 		var x = document.getElementById("lightpositions").value;
 		lightPosition = vec4(x, 1.0, 1.0, 0.0 );
 		gl.uniform4fv( gl.getUniformLocation(program,"lightPosition"),flatten(lightPosition) );
 	};
-	
+
 	//Function to get the ambient light
 	document.getElementById("ambientLight").onchange = function() {
 		var x = document.getElementById("ambientLight").value;
@@ -358,7 +358,7 @@ window.onload = function init() {
 		ambientProduct = mult(lightAmbient, materialAmbient);
 		gl.uniform4fv( gl.getUniformLocation(program,"ambientProduct"),flatten(ambientProduct) );
 	};
-	
+
 	//Function to get the diffuse light
 	document.getElementById("diffuseLight").onchange = function() {
 		var x = document.getElementById("diffuseLight").value;
@@ -366,7 +366,7 @@ window.onload = function init() {
 		diffuseProduct = mult(lightDiffuse, materialDiffuse);
 		gl.uniform4fv( gl.getUniformLocation(program,"diffuseProduct"),flatten(diffuseProduct) );
 	};
-	
+
 	//Function to get the specular light
 	document.getElementById("specularLight").onchange = function() {
 		var x = document.getElementById("specularLight").value;
@@ -374,7 +374,7 @@ window.onload = function init() {
 		specularProduct = mult(lightSpecular, materialSpecular);
 		gl.uniform4fv( gl.getUniformLocation(program,"specularProduct"),flatten(specularProduct) );
 	};
-	
+
     gl.uniform4fv( gl.getUniformLocation(program,"ambientProduct"),flatten(ambientProduct) );
     gl.uniform4fv( gl.getUniformLocation(program,"diffuseProduct"),flatten(diffuseProduct) );
     gl.uniform4fv( gl.getUniformLocation(program,"specularProduct"),flatten(specularProduct) );
