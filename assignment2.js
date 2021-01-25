@@ -236,21 +236,29 @@ var vertexColors = [
 ];
 
 window.onload = function init() {
-    canvas = document.getElementById( "gl-canvas" );
+    canvas = document.getElementById("gl-canvas");
 
-    gl = WebGLUtils.setupWebGL( canvas );
-    if ( !gl ) { alert( "WebGL isn't available" ); }
+    gl = WebGLUtils.setupWebGL(canvas);
+    if (!gl) {
+      alert("WebGL isn't available");
+    }
 
-    gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.clearColor(1.0, 1.0, 1.0, 1.0);
 
     gl.enable(gl.DEPTH_TEST);
 
-    //generate cube vertices;
+    // Generate cube vertices;
     colorCube();
 
-    //generate sphere vertices;
-    tetrahedron(vertices[8], vertices[9], vertices[10], vertices[11], numTimesToSubdivide);
+    // Generate sphere vertices;
+    tetrahedron(
+      vertices[8],
+      vertices[9],
+      vertices[10],
+      vertices[11],
+      numTimesToSubdivide
+    );
 
     //  Load shaders and initialize attribute buffers
 
