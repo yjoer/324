@@ -57,20 +57,24 @@ var materialDiffuse = vec4( 1.0, 0.8, 0.0, 1.0 );
 var materialSpecular = vec4( 1.0, 0.8, 0.0, 1.0 );
 var materialShininess = 10.0;
 
-//Function for texture mapping for cube
-function configureCubeTexture( image ) {
+// Function for texture mapping for cube
+function configureCubeTexture(image) {
+  cubeTexture = gl.createTexture();
+  gl.activeTexture(gl.TEXTURE0 + 0);
+  gl.bindTexture(gl.TEXTURE_2D, cubeTexture);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
-    cubeTexture = gl.createTexture();
-    gl.activeTexture(gl.TEXTURE0 + 0);
-    gl.bindTexture( gl.TEXTURE_2D, cubeTexture );
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  // Upload image into texture
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  gl.texParameteri(
+    gl.TEXTURE_2D,
+    gl.TEXTURE_MIN_FILTER,
+    gl.NEAREST_MIPMAP_LINEAR
+  );
 
-	//upload image into texture;
-    gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image );
-    gl.generateMipmap( gl.TEXTURE_2D );
-    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER,gl.NEAREST_MIPMAP_LINEAR );
-    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST );
-    gl.uniform1i(gl.getUniformLocation(program, "cubeTexture"), 0);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.uniform1i(gl.getUniformLocation(program, "cubeTexture"), 0);
 }
 
 function quad(a, b, c, d) {
