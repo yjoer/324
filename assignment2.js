@@ -126,30 +126,38 @@ function colorCube() {
   quad(5, 4, 0, 1);
 }
 
-//Function to create triangle
+// Function to create triangle
 function triangle(a, b, c) {
+  var t1 = subtract(b, a);
+  var t2 = subtract(c, a);
+  var normal = vec4(normalize(cross(t2, t1)));
 
-        var t1 = subtract(b, a);
-    	var t2 = subtract(c, a);
-    	var normal = vec4(normalize(cross(t2, t1)));
+  normalsArray.push(normal);
+  normalsArray.push(normal);
+  normalsArray.push(normal);
 
-     normalsArray.push(normal);
-     normalsArray.push(normal);
-     normalsArray.push(normal);
+  pointsArray.push(a);
+  colorsArray.push(vertexColors[4]);
+  texCoordsArray.push([
+    (sphereScale * Math.acos(a[0])) / Math.PI,
+    (sphereScale * Math.asin(a[1] / Math.sqrt(1.0 - a[0] * a[0]))) / Math.PI,
+  ]);
 
-     pointsArray.push(a);
-     colorsArray.push(vertexColors[4]);
-     texCoordsArray.push([sphereScale*Math.acos(a[0])/Math.PI, sphereScale*Math.asin(a[1]/Math.sqrt(1.0-a[0]*a[0]))/Math.PI]);
+  pointsArray.push(b);
+  colorsArray.push(vertexColors[4]);
+  texCoordsArray.push([
+    (sphereScale * Math.acos(b[0])) / Math.PI,
+    (sphereScale * Math.asin(b[1] / Math.sqrt(1.0 - b[0] * b[0]))) / Math.PI,
+  ]);
 
-     pointsArray.push(b);
-     colorsArray.push(vertexColors[4]);
-     texCoordsArray.push([sphereScale*Math.acos(b[0])/Math.PI, sphereScale*Math.asin(b[1]/Math.sqrt(1.0-b[0]*b[0]))/Math.PI]);
+  pointsArray.push(c);
+  colorsArray.push(vertexColors[4]);
+  texCoordsArray.push([
+    (sphereScale * Math.acos(c[0])) / Math.PI,
+    (sphereScale * Math.asin(c[1] / Math.sqrt(1.0 - c[0] * c[0]))) / Math.PI,
+  ]);
 
-     pointsArray.push(c);
-     colorsArray.push(vertexColors[4]);
-     texCoordsArray.push([sphereScale*Math.acos(c[0])/Math.PI, sphereScale*Math.asin(c[1]/Math.sqrt(1.0-c[0]*c[0]))/Math.PI]);
-
-     index += 3;
+  index += 3;
 }
 
 //Function for triangle division
