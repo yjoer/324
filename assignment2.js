@@ -35,10 +35,6 @@ var sphereScale = 3; // decide image bitmap scale
 var sphereTexture; //variable to store texture of sphere
 var rotationSpeed = 3; //Rotation speed for sphere
 
-var ambientProduct; //lightAmbient*materialAmbient
-var diffuseProduct; //lightDiffuse*materialDiffuse
-var specularProduct; // lightSpecular*materialSpecular
-
 var texCoord = [
     vec2(0, 0),
     vec2(0, 1),
@@ -264,9 +260,9 @@ window.onload = function init() {
   program = initShaders(gl, "vertex-shader", "fragment-shader");
   gl.useProgram(program);
 
-  ambientProduct = mult(lightAmbient, materialAmbient);
-  diffuseProduct = mult(lightDiffuse, materialDiffuse);
-  specularProduct = mult(lightSpecular, materialSpecular);
+  let ambientProduct = mult(lightAmbient, materialAmbient);
+  let diffuseProduct = mult(lightDiffuse, materialDiffuse);
+  let specularProduct = mult(lightSpecular, materialSpecular);
 
   modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
   projectionMatrixLoc = gl.getUniformLocation(program, "projectionMatrix");
