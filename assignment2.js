@@ -24,7 +24,7 @@ var texCoordsArray = [];
 
 //Cube
 var cubeTexture; //variable to store texture of cube
-var numVertices  = 36;
+var numVertices = 36;
 
 //sphere
 var numTimesToSubdivide = 4; //number of time of subdivision
@@ -32,22 +32,17 @@ var sphereScale = 3; // decide image bitmap scale
 var sphereTexture; //variable to store texture of sphere
 var rotationSpeed = 3; //Rotation speed for sphere
 
-var texCoord = [
-    vec2(0, 0),
-    vec2(0, 1),
-    vec2(1, 1),
-    vec2(1, 0)
-];
+var texCoord = [vec2(0, 0), vec2(0, 1), vec2(1, 1), vec2(1, 0)];
 
 //Lighting and shading
-var lightPosition = vec4(0.1, 1.0, 1.0, 0.0 );
-var lightAmbient = vec4(0.1, 1.0, 0.4, 1.0 );
-var lightDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
-var lightSpecular = vec4( 1.0, 1.0, 1.0, 1.0 );
+var lightPosition = vec4(0.1, 1.0, 1.0, 0.0);
+var lightAmbient = vec4(0.1, 1.0, 0.4, 1.0);
+var lightDiffuse = vec4(1.0, 1.0, 1.0, 1.0);
+var lightSpecular = vec4(1.0, 1.0, 1.0, 1.0);
 
-var materialAmbient = vec4( 1.0, 0.0, 1.0, 1.0 );
-var materialDiffuse = vec4( 1.0, 0.8, 0.0, 1.0 );
-var materialSpecular = vec4( 1.0, 0.8, 0.0, 1.0 );
+var materialAmbient = vec4(1.0, 0.0, 1.0, 1.0);
+var materialDiffuse = vec4(1.0, 0.8, 0.0, 1.0);
+var materialSpecular = vec4(1.0, 0.8, 0.0, 1.0);
 var materialShininess = 10.0;
 
 // Function for texture mapping for cube
