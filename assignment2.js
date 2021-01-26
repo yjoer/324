@@ -1,11 +1,8 @@
 var canvas;
 var gl;
-var start = true;
 
 var modelViewMatrixLoc = mat4();
 var projectionMatrixLoc = mat4();
-var modelViewMatrix = mat4(); //cube;
-var modelViewMatrix2 = mat4(); //sphere;
 var projectionMatrix = mat4();
 
 var left = -2.0;
@@ -325,6 +322,22 @@ window.onload = function init() {
   render();
 };
 
+let cubeParams = {
+  rotationAngle: 0,
+  translationMagnitude: {
+    x: 0,
+    y: 0,
+    z: 0,
+  },
+  scalingFactor: {
+    x: 1,
+    y: 1,
+    z: 1,
+  },
+};
+
+let sphereParams = JSON.parse(JSON.stringify(cubeParams));
+
 var render = function () {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -332,24 +345,47 @@ var render = function () {
   gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
 
   // Draw cube, 36 points
-  if (start) {
-    modelViewMatrix = mult(rotate(-3, 1, 1, 1), modelViewMatrix);
-    modelViewMatrix = mult(translate(2.5, 0, 0), modelViewMatrix);
-    start = false;
-  } else {
-    modelViewMatrix = mult(translate(-2.5, 0, 0), modelViewMatrix);
-    modelViewMatrix = mult(rotate(-3, 1, 1, 1), modelViewMatrix);
-    modelViewMatrix = mult(translate(2.5, 0, 0), modelViewMatrix);
-  }
+  cubeParams.rotationAngle += 3;
+  cubeParams.translationMagnitude.x = 2.5;
+
+  let modelViewMatrix = mat4();
+  modelViewMatrix = mult(
+    rotate(cubeParams.rotationAngle, 1, 1, 1),
+    modelViewMatrix
+  );
+  modelViewMatrix = mult(
+    translate(
+      cubeParams.translationMagnitude.x,
+      cubeParams.translationMagnitude.y,
+      cubeParams.translationMagnitude.z
+    ),
+    modelViewMatrix
+  );
+
   gl.uniform1i(gl.getUniformLocation(program, "texMode"), 0);
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
   gl.drawArrays(gl.TRIANGLES, 0, 36);
 
   // Draw sphere, depends on the number of iterations
+  sphereParams.rotationAngle += 3;
+  sphereParams.translationMagnitude.x = 0;
+
+  let modelViewMatrix2 = mat4();
+  modelViewMatrix2 = mult(
+    rotate(sphereParams.rotationAngle, 0, 1, 1),
+    modelViewMatrix2
+  );
+  modelViewMatrix2 = mult(
+    translate(
+      sphereParams.translationMagnitude.x,
+      sphereParams.translationMagnitude.y,
+      sphereParams.translationMagnitude.z
+    ),
+    modelViewMatrix2
+  );
+
   gl.uniform1i(gl.getUniformLocation(program, "texMode"), 1);
-  modelViewMatrix2 = mult(rotate(rotationSpeed, 0, 1, 1), modelViewMatrix2);
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix2));
-  console.log(pointsArray.length);
   for (var i = numVertices; i < index + numVertices; i += 3) {
     gl.drawArrays(gl.TRIANGLES, i, 3);
   }
