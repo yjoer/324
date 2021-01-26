@@ -273,10 +273,10 @@ window.onload = function init() {
 
   gl.enable(gl.DEPTH_TEST);
 
-  // Generate cube vertices;
+  // Generate cube vertices
   colorCube();
 
-  // Generate sphere vertices;
+  // Generate sphere vertices
   tetrahedron(
     vertices[8],
     vertices[9],
