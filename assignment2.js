@@ -16,7 +16,8 @@ var at = vec3(0.0, 0.0, 0.0);
 var up = vec3(0.0, 1.0, 0.0);
 
 var program;
-var index = 0;
+var sphereIndex = 0;
+var tetraIndex = 0;
 var normalsArray = [];
 var pointsArray = [];
 var colorsArray = [];
@@ -144,8 +145,6 @@ function triangle(a, b, c) {
     (sphereScale * Math.acos(c[0])) / Math.PI,
     (sphereScale * Math.asin(c[1] / Math.sqrt(1.0 - c[0] * c[0]))) / Math.PI,
   ]);
-
-  index += 3;
 }
 
 // Function for triangle division
@@ -165,6 +164,7 @@ function divideTriangle(a, b, c, count) {
     divideTriangle(ab, bc, ac, count - 1);
   } else {
     triangle(a, b, c);
+    sphereIndex += 3;
   }
 }
 
@@ -173,6 +173,43 @@ function tetrahedron(a, b, c, d, n) {
   divideTriangle(d, c, b, n);
   divideTriangle(a, d, b, n);
   divideTriangle(a, c, d, n);
+}
+
+function tetra(a, b, c, d) {
+  // tetrahedron with each side using
+  // a different color
+
+  triangle(a, c, b);
+  triangle(a, c, d);
+  triangle(a, b, d);
+  triangle(b, c, d);
+  tetraIndex += 12;
+}
+
+function divideTetra(a, b, c, d, count) {
+  // check for end of recursion
+
+  if (count === 0) {
+    tetra(a, b, c, d);
+  }
+
+  // find midpoints of sides
+  // divide four smaller tetrahedra
+  else {
+    var ab = mix(a, b, 0.5);
+    var ac = mix(a, c, 0.5);
+    var ad = mix(a, d, 0.5);
+    var bc = mix(b, c, 0.5);
+    var bd = mix(b, d, 0.5);
+    var cd = mix(c, d, 0.5);
+
+    --count;
+
+    divideTetra(a, ab, ac, ad, count);
+    divideTetra(ab, b, bc, bd, count);
+    divideTetra(ac, bc, c, cd, count);
+    divideTetra(ad, bd, cd, d, count);
+  }
 }
 
 // Texture mapping for sphere
@@ -248,6 +285,9 @@ window.onload = function init() {
     numTimesToSubdivide
   );
 
+  // Generate tetrahedron vertices
+  divideTetra(vertices[8], vertices[9], vertices[10], vertices[11], 0);
+
   // Load shaders and initialize attribute buffers
   program = initShaders(gl, "vertex-shader", "fragment-shader");
   gl.useProgram(program);
@@ -319,6 +359,7 @@ window.onload = function init() {
 
 let cubeParams = {
   rotationAngle: 0,
+  rotationAxes: [1, 1, 1],
   translationMagnitude: {
     x: 0,
     y: 0,
@@ -332,6 +373,7 @@ let cubeParams = {
 };
 
 let sphereParams = JSON.parse(JSON.stringify(cubeParams));
+let tetraParams = JSON.parse(JSON.stringify(cubeParams));
 
 var render = function () {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -341,11 +383,12 @@ var render = function () {
 
   // Draw cube, 36 points
   cubeParams.rotationAngle += 3;
-  cubeParams.translationMagnitude.x = 2.5;
+  cubeParams.rotationAxes = [1, 1, 1];
+  cubeParams.translationMagnitude.x = 1.625;
 
   let modelViewMatrix = mat4();
   modelViewMatrix = mult(
-    rotate(cubeParams.rotationAngle, 1, 1, 1),
+    rotate(cubeParams.rotationAngle, ...cubeParams.rotationAxes),
     modelViewMatrix
   );
   modelViewMatrix = mult(
@@ -363,11 +406,12 @@ var render = function () {
 
   // Draw sphere, depends on the number of iterations
   sphereParams.rotationAngle += 3;
-  sphereParams.translationMagnitude.x = 0;
+  sphereParams.rotationAxes = [0, 1, 1];
+  sphereParams.translationMagnitude.x = -0.75;
 
   let modelViewMatrix2 = mat4();
   modelViewMatrix2 = mult(
-    rotate(sphereParams.rotationAngle, 0, 1, 1),
+    rotate(sphereParams.rotationAngle, ...sphereParams.rotationAxes),
     modelViewMatrix2
   );
   modelViewMatrix2 = mult(
@@ -381,7 +425,36 @@ var render = function () {
 
   gl.uniform1i(gl.getUniformLocation(program, "texMode"), 1);
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix2));
-  for (var i = numVertices; i < index + numVertices; i += 3) {
+  for (let i = numVertices; i < sphereIndex + numVertices; i += 3) {
+    gl.drawArrays(gl.TRIANGLES, i, 3);
+  }
+
+  // Draw tetrahedron
+  tetraParams.rotationAngle += 3;
+  tetraParams.rotationAxes = [1, 1, 1];
+  tetraParams.translationMagnitude.x = 3.75;
+
+  let modelViewMatrix3 = mat4();
+  modelViewMatrix3 = mult(
+    rotate(tetraParams.rotationAngle, ...tetraParams.rotationAxes),
+    modelViewMatrix3
+  );
+  modelViewMatrix3 = mult(
+    translate(
+      tetraParams.translationMagnitude.x,
+      tetraParams.translationMagnitude.y,
+      tetraParams.translationMagnitude.z
+    ),
+    modelViewMatrix3
+  );
+
+  gl.uniform1i(gl.getUniformLocation(program, "texMode"), 0);
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix3));
+  for (
+    let i = numVertices + sphereIndex;
+    i < numVertices + sphereIndex + tetraIndex;
+    i += 3
+  ) {
     gl.drawArrays(gl.TRIANGLES, i, 3);
   }
 
