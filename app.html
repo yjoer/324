@@ -93,9 +93,167 @@
     <script type="text/javascript" src="Common/initShaders.js"></script>
     <script type="text/javascript" src="Common/MV.js"></script>
     <script type="text/javascript" src="assignment2.js"></script>
+    <link rel="stylesheet" href="app.css" />
   </head>
   <body>
-    <canvas id="gl-canvas" width="512" height="512"></canvas>
+    <div class="container">
+      <div class="sidebar">
+        <div class="sidebar-content">
+          <div class="sidebar-content-group">
+            <label>Select an Object</label>
+            <div class="sidebar-content-radio-group">
+              <div>
+                <!-- prettier-ignore -->
+                <input id="object-sphere" name="object" type="radio" value="sphere" />
+                <label for="object-sphere">Sphere</label>
+              </div>
+              <div>
+                <!-- prettier-ignore -->
+                <input id="object-cube" name="object" type="radio" value="cube" />
+                <label for="object-cube">Cube</label>
+              </div>
+              <div>
+                <!-- prettier-ignore -->
+                <input id="object-tetrahedron" name="object" type="radio" value="tetrahedron" />
+                <label for="object-tetrahedron">Tetrahedron</label>
+              </div>
+            </div>
+          </div>
+          <div class="sidebar-content-title">Object Properties</div>
+          <div class="sidebar-content-group">
+            <label>Material Shininess</label>
+            <div class="sidebar-content-range-group">
+              <input id="shininess" type="range" min="0" max="9" step="1" />
+              <div id="shininess-value">0</div>
+            </div>
+          </div>
+          <div class="sidebar-content-group">
+            <label>Light Position</label>
+            <div class="sidebar-content-range-group">
+              <input
+                id="light-position"
+                type="range"
+                min="0"
+                max="9"
+                step="1"
+              />
+              <div id="light-position-value">0</div>
+            </div>
+          </div>
+          <div class="sidebar-content-group">
+            <label>Ambient Light</label>
+            <div class="sidebar-content-range-group">
+              <input id="ambient-light" type="range" min="0" max="9" step="1" />
+              <div id="ambient-light-value">0</div>
+            </div>
+          </div>
+          <div class="sidebar-content-group">
+            <label>Diffuse Light</label>
+            <div class="sidebar-content-range-group">
+              <input id="diffuse-light" type="range" min="0" max="9" step="1" />
+              <div id="diffuse-light-value">0</div>
+            </div>
+          </div>
+          <div class="sidebar-content-group">
+            <label>Specular Light</label>
+            <div class="sidebar-content-range-group">
+              <input
+                id="specular-light"
+                type="range"
+                min="0"
+                max="9"
+                step="1"
+              />
+              <div id="specular-light-value">0</div>
+            </div>
+          </div>
+          <div class="sidebar-content-title">Animation Properties</div>
+          <div class="sidebar-content-group">
+            <label>Rotation Axes</label>
+            <div class="sidebar-content-radio-group">
+              <div>
+                <!-- prettier-ignore -->
+                <input id="rotation-x" name="rotation-axes" type="checkbox" value="x" />
+                <label for="rotation-x">X Axis</label>
+              </div>
+              <div>
+                <!-- prettier-ignore -->
+                <input id="rotation-y" name="rotation-axes" type="checkbox" value="y" />
+                <label for="rotation-y">Y Axis</label>
+              </div>
+              <div>
+                <!-- prettier-ignore -->
+                <input id="rotation-z" name="rotation-axes" type="checkbox" value="z" />
+                <label for="rotation-z">Z Axis</label>
+              </div>
+            </div>
+          </div>
+          <div class="sidebar-content-group">
+            <label>Rotation Angle (°)</label>
+            <div class="sidebar-content-range-group">
+              <!-- prettier-ignore -->
+              <input id="rotation-speed" type="range" min="0" max="9" step="1" />
+              <div id="rotation-speed-value">0</div>
+            </div>
+          </div>
+          <div class="sidebar-content-group">
+            <label>Translation Magnitude</label>
+            <div class="sidebar-content-radio-group">
+              <div>
+                <!-- prettier-ignore -->
+                <input id="translation-x" name="translation-axis" type="radio" value="x">
+                <label for="translation-x">X Axis</label>
+              </div>
+              <div>
+                <!-- prettier-ignore -->
+                <input id="translation-y" name="translation-axis" type="radio" value="y">
+                <label for="translation-y">Y Axis</label>
+              </div>
+              <div>
+                <!-- prettier-ignore -->
+                <input id="translation-z" name="translation-axis" type="radio" value="z">
+                <label for="translation-z">Z Axis</label>
+              </div>
+            </div>
+            <div class="sidebar-content-range-group">
+              <!-- prettier-ignore -->
+              <input id="translation" type="range" min="-3" max="3" step="0.1" value="0" />
+              <div id="translation-value">0</div>
+            </div>
+          </div>
+          <div class="sidebar-content-group">
+            <label>Scaling Factor</label>
+            <div class="sidebar-content-radio-group">
+              <div>
+                <!-- prettier-ignore -->
+                <input id="scale-x" name="scaling-axis" type="radio" value="x" />
+                <label for="scale-x">X Axis</label>
+              </div>
+              <div>
+                <!-- prettier-ignore -->
+                <input id="scale-y" name="scaling-axis" type="radio" value="y" />
+                <label for="scale-y">Y Axis</label>
+              </div>
+              <div>
+                <!-- prettier-ignore -->
+                <input id="scale-z" name="scaling-axis" type="radio" value="z" />
+                <label for="scale-z">Z Axis</label>
+              </div>
+            </div>
+            <div class="sidebar-content-range-group">
+              <input id="scaling" type="range" min="0" max="3.5" step="0.1" />
+              <div id="scaling-value">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="content" class="content">
+        <canvas id="gl-canvas" width="512" height="512">
+          Oops ... your browser doesn't support the HTML5 canvas element
+        </canvas>
+      </div>
+    </div>
+
     <img id="cubeImage1" src="image1.jpg" alt="" hidden />
     <img id="sphereImage1" src="image1.jpg" alt="" hidden />
 
