@@ -357,7 +357,8 @@ window.onload = function init() {
   render();
 };
 
-let cubeParams = {
+let paramsTemplate = {
+  rotation: -3,
   rotationAngle: 0,
   rotationAxes: [1, 1, 1],
   translationMagnitude: {
@@ -372,8 +373,17 @@ let cubeParams = {
   },
 };
 
-let sphereParams = JSON.parse(JSON.stringify(cubeParams));
-let tetraParams = JSON.parse(JSON.stringify(cubeParams));
+let cubeParams = JSON.parse(JSON.stringify(paramsTemplate));
+cubeParams.rotationAxes = [1, 1, 1];
+cubeParams.translationMagnitude.x = 1.625;
+
+let sphereParams = JSON.parse(JSON.stringify(paramsTemplate));
+sphereParams.translationMagnitude.x = -0.75;
+sphereParams.rotationAxes = [0, 1, 1];
+
+let tetraParams = JSON.parse(JSON.stringify(paramsTemplate));
+tetraParams.rotationAxes = [1, 1, 1];
+tetraParams.translationMagnitude.x = 3.75;
 
 var render = function () {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -382,9 +392,7 @@ var render = function () {
   gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
 
   // Draw cube, 36 points
-  cubeParams.rotationAngle += 3;
-  cubeParams.rotationAxes = [1, 1, 1];
-  cubeParams.translationMagnitude.x = 1.625;
+  cubeParams.rotationAngle += cubeParams.rotation;
 
   let modelViewMatrix = mat4();
   modelViewMatrix = mult(
@@ -405,9 +413,7 @@ var render = function () {
   gl.drawArrays(gl.TRIANGLES, 0, 36);
 
   // Draw sphere, depends on the number of iterations
-  sphereParams.rotationAngle += 3;
-  sphereParams.rotationAxes = [0, 1, 1];
-  sphereParams.translationMagnitude.x = -0.75;
+  sphereParams.rotationAngle += sphereParams.rotation;
 
   let modelViewMatrix2 = mat4();
   modelViewMatrix2 = mult(
@@ -430,9 +436,7 @@ var render = function () {
   }
 
   // Draw tetrahedron
-  tetraParams.rotationAngle += 3;
-  tetraParams.rotationAxes = [1, 1, 1];
-  tetraParams.translationMagnitude.x = 3.75;
+  tetraParams.rotationAngle += tetraParams.rotation;
 
   let modelViewMatrix3 = mat4();
   modelViewMatrix3 = mult(
