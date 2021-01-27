@@ -1,13 +1,63 @@
 let selectedObject = "sphere";
 
+let textureParams = {
+  sphere: {
+    textureUrl: "images/image7.jpg",
+    minificationFilter: "nml",
+    magnificationFilter: "nearest",
+  },
+  cube: {
+    textureUrl: "images/image8.jpg",
+    minificationFilter: "nml",
+    magnificationFilter: "nearest",
+  },
+  tetrahedron: {
+    textureUrl: "images/image9.jpg",
+    minificationFilter: "nml",
+    magnificationFilter: "nearest",
+  },
+};
+
+function loadImage(url, targetObject) {
+  if (!targetObject) {
+    targetObject = selectedObject;
+  }
+
+  let image = document.createElement("img");
+  image.src = url;
+
+  function isPowerOf2(value) {
+    return (value & (value - 1)) == 0;
+  }
+
+  image.onload = () => {
+    if (!isPowerOf2(image.width) || !isPowerOf2(image.height)) {
+      alert("The dimension of the texture is not power of 2.");
+      return;
+    }
+
+    const { minificationFilter, magnificationFilter } = textureParams[
+      targetObject
+    ];
+
+    switch (targetObject) {
+      case "sphere":
+        configureSphereTexture(image, minificationFilter, magnificationFilter);
+        break;
+      case "cube":
+        configureCubeTexture(image, minificationFilter, magnificationFilter);
+        break;
+      case "tetrahedron":
+        configureTetraTexture(image, minificationFilter, magnificationFilter);
+        break;
+    }
+  };
+}
+
 // Initialize the image for texture mapping
-var cubeImage = document.getElementById("cubeImage1");
-configureCubeTexture(cubeImage);
-
-var sphereImage = document.getElementById("sphereImage1");
-configureSphereTexture(sphereImage);
-
-configureTetraTexture(sphereImage);
+loadImage(textureParams.sphere.textureUrl, "sphere");
+loadImage(textureParams.cube.textureUrl, "cube");
+loadImage(textureParams.tetrahedron.textureUrl, "tetrahedron");
 
 // Image for texture mapping
 function handleTexture() {
@@ -25,34 +75,6 @@ function handleTexture() {
 
   let buttonsElement = document.getElementsByName("texture");
 
-  function isPowerOf2(value) {
-    return (value & (value - 1)) == 0;
-  }
-
-  function loadImage(url) {
-    let image = document.createElement("img");
-    image.src = url;
-
-    image.onload = () => {
-      if (!isPowerOf2(image.width) || !isPowerOf2(image.height)) {
-        alert("The dimension of the texture is not power of 2.");
-        return;
-      }
-
-      switch (selectedObject) {
-        case "sphere":
-          configureSphereTexture(image);
-          break;
-        case "cube":
-          configureCubeTexture(image);
-          break;
-        case "tetrahedron":
-          configureTetraTexture(image);
-          break;
-      }
-    };
-  }
-
   for (let buttonElement of buttonsElement) {
     buttonElement.addEventListener("click", () => {
       if (buttonElement.value == "custom") {
@@ -68,15 +90,43 @@ function handleTexture() {
         });
 
         reader.addEventListener("load", () => {
+          textureParams[selectedObject]["textureUrl"] = reader.result;
           loadImage(reader.result);
         });
 
         return;
       }
 
+      textureParams[selectedObject]["textureUrl"] = images[buttonElement.value];
       loadImage(images[buttonElement.value]);
     });
   }
+}
+
+function handleMinificationFilter() {
+  let minificationElement = document.getElementById("texture-minification");
+
+  minificationElement.value =
+    textureParams[selectedObject]["minificationFilter"];
+
+  minificationElement.addEventListener("input", () => {
+    textureParams[selectedObject]["minificationFilter"] =
+      minificationElement.value;
+    loadImage(textureParams[selectedObject]["textureUrl"]);
+  });
+}
+
+function handleMagnificationFilter() {
+  let magnificationElement = document.getElementById("texture-magnification");
+
+  magnificationElement.value =
+    textureParams[selectedObject]["magnificationFilter"];
+
+  magnificationElement.addEventListener("input", () => {
+    textureParams[selectedObject]["magnificationFilter"] =
+      magnificationElement.value;
+    loadImage(textureParams[selectedObject]["textureUrl"]);
+  });
 }
 
 let params = {
@@ -445,6 +495,12 @@ function resetNodesByName(name) {
 function initializeHandlers() {
   resetNodesByName("texture");
   handleTexture();
+
+  resetNodeById("texture-minification");
+  handleMinificationFilter();
+
+  resetNodeById("texture-magnification");
+  handleMagnificationFilter();
 
   resetNodeById("shininess");
   handleShininess();

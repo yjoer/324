@@ -161,6 +161,24 @@
             </div>
           </div>
           <div class="sidebar-content-group">
+            <label>Texture Minification Filter</label>
+            <select id="texture-minification">
+              <option value="linear">Linear</option>
+              <option value="nearest">Nearest</option>
+              <option value="nmn">Nearest Mipmap Nearest</option>
+              <option value="lmn">Linear Mipmap Nearest</option>
+              <option value="nml">Nearest Mipmap Linear</option>
+              <option value="lml">Linear Mipmap Linear</option>
+            </select>
+          </div>
+          <div class="sidebar-content-group">
+            <label>Texture Magnification Filter</label>
+            <select id="texture-magnification">
+              <option value="linear">Linear</option>
+              <option value="nearest">Nearest</option>
+            </select>
+          </div>
+          <div class="sidebar-content-group">
             <label>Material Shininess</label>
             <div class="sidebar-content-range-group">
               <input id="shininess" type="range" min="0" max="100" step="1" />
@@ -285,23 +303,5 @@
         </canvas>
       </div>
     </div>
-
-    <img id="cubeImage1" src="images/image1.jpg" alt="" hidden />
-    <img id="sphereImage1" src="images/image1.jpg" alt="" hidden />
-
-    <img id="cubeImage2" src="images/image2.jpg" alt="" hidden />
-    <img id="sphereImage2" src="images/image2.jpg" alt="" hidden />
-
-    <img id="cubeImage3" src="images/image3.jpg" alt="" hidden />
-    <img id="sphereImage3" src="images/image3.jpg" alt="" hidden />
-
-    <img id="cubeImage4" src="images/image4.jpg" alt="" hidden />
-    <img id="sphereImage4" src="images/image4.jpg" alt="" hidden />
-
-    <img id="cubeImage5" src="images/image5.jpg" alt="" hidden />
-    <img id="sphereImage5" src="images/image5.jpg" alt="" hidden />
-
-    <img id="cubeImage6" src="images/image6.jpg" alt="" hidden />
-    <img id="sphereImage6" src="images/image6.jpg" alt="" hidden />
   </body>
 </html>

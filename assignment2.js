@@ -49,8 +49,63 @@ var materialDiffuse = vec4(1.0, 0.8, 0.0, 1.0);
 var materialSpecular = vec4(1.0, 0.8, 0.0, 1.0);
 var materialShininess = 10.0;
 
+function selectFilter(minificationFilter, magnificationFilter) {
+  let minFilter;
+  let magFilter;
+
+  switch (minificationFilter) {
+    case "linear":
+      minFilter = gl.LINEAR;
+      break;
+    case "nearest":
+      minFilter = gl.NEAREST;
+      break;
+    case "nmn":
+      minFilter = gl.NEAREST_MIPMAP_NEAREST;
+      break;
+    case "lmn":
+      minFilter = gl.LINEAR_MIPMAP_NEAREST;
+      break;
+    case "nml":
+      minFilter = gl.NEAREST_MIPMAP_LINEAR;
+      break;
+    case "lml":
+      minFilter = gl.LINEAR_MIPMAP_LINEAR;
+      break;
+  }
+
+  if (magnificationFilter == "linear") {
+    magFilter = gl.LINEAR;
+  } else if (magnificationFilter == "nearest") {
+    magFilter = gl.NEAREST;
+  }
+
+  return [minFilter, magFilter];
+}
+
+// Texture mapping for sphere
+// prettier-ignore
+function configureSphereTexture(image, minificationFilter, magnificationFilter) {
+  sphereTexture = gl.createTexture();
+  gl.activeTexture(gl.TEXTURE0 + 1);
+  gl.bindTexture(gl.TEXTURE_2D, sphereTexture);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+  gl.generateMipmap(gl.TEXTURE_2D);
+
+  const [minFilter, magFilter] = selectFilter(
+    minificationFilter,
+    magnificationFilter
+  );
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, minFilter);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magFilter);
+
+  gl.uniform1i(gl.getUniformLocation(program, "sphereTexture"), 1);
+}
+
 // Function for texture mapping for cube
-function configureCubeTexture(image) {
+function configureCubeTexture(image, minificationFilter, magnificationFilter) {
   cubeTexture = gl.createTexture();
   gl.activeTexture(gl.TEXTURE0 + 0);
   gl.bindTexture(gl.TEXTURE_2D, cubeTexture);
@@ -59,18 +114,19 @@ function configureCubeTexture(image) {
   // Upload image into texture
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
   gl.generateMipmap(gl.TEXTURE_2D);
-  gl.texParameteri(
-    gl.TEXTURE_2D,
-    gl.TEXTURE_MIN_FILTER,
-    gl.NEAREST_MIPMAP_LINEAR
-  );
 
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  const [minFilter, magFilter] = selectFilter(
+    minificationFilter,
+    magnificationFilter
+  );
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, minFilter);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magFilter);
+
   gl.uniform1i(gl.getUniformLocation(program, "cubeTexture"), 0);
 }
 
 // Function for texture mapping for tetrahedron
-function configureTetraTexture(image) {
+function configureTetraTexture(image, minificationFilter, magnificationFilter) {
   tetraTexture = gl.createTexture();
   gl.activeTexture(gl.TEXTURE0 + 2);
   gl.bindTexture(gl.TEXTURE_2D, tetraTexture);
@@ -78,12 +134,13 @@ function configureTetraTexture(image) {
 
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
   gl.generateMipmap(gl.TEXTURE_2D);
-  gl.texParameteri(
-    gl.TEXTURE_2D,
-    gl.TEXTURE_MIN_FILTER,
-    gl.NEAREST_MIPMAP_LINEAR
+
+  const [minFilter, magFilter] = selectFilter(
+    minificationFilter,
+    magnificationFilter
   );
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, minFilter);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magFilter);
 
   gl.uniform1i(gl.getUniformLocation(program, "tetraTexture"), 2);
 }
@@ -232,25 +289,6 @@ function divideTetra(a, b, c, d, count) {
     divideTetra(ac, bc, c, cd, count);
     divideTetra(ad, bd, cd, d, count);
   }
-}
-
-// Texture mapping for sphere
-function configureSphereTexture(image) {
-  sphereTexture = gl.createTexture();
-  gl.activeTexture(gl.TEXTURE0 + 1);
-  gl.bindTexture(gl.TEXTURE_2D, sphereTexture);
-  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
-  gl.generateMipmap(gl.TEXTURE_2D);
-  gl.texParameteri(
-    gl.TEXTURE_2D,
-    gl.TEXTURE_MIN_FILTER,
-    gl.NEAREST_MIPMAP_LINEAR
-  );
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-
-  gl.uniform1i(gl.getUniformLocation(program, "sphereTexture"), 1);
 }
 
 var vertices = [
