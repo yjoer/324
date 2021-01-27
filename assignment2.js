@@ -411,10 +411,10 @@ window.onload = function init() {
 
 let paramsTemplate = {
   shininess: 10,
-  lightPosition: 0,
-  ambientLight: 0,
-  diffuseLight: 0,
-  specularLight: 0,
+  lightPosition: 1,
+  ambientLight: 0.1,
+  diffuseLight: 1,
+  specularLight: 1,
   rotation: -3,
   rotationAngle: 0,
   rotationAxes: [1, 1, 1],

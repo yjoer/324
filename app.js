@@ -115,15 +115,34 @@ function handleShininess() {
 }
 
 // Function to get the light position
-document.getElementById("light-position").onchange = function () {
-  let x = document.getElementById("light-position").value;
-  let lightPosition = vec4(x, 1.0, 1.0, 0.0);
+function handleLightPosition() {
+  let lightPositionElement = document.getElementById("light-position");
+  let lightPositionValue = document.getElementById("light-position-value");
 
+  const uniformVariable = lightingParams["lightPosition"][selectedObject];
+  const savedValue = params[selectedObject]["lightPosition"];
+  const savedLightPosition = vec4(savedValue, 1.0, 1.0, 0.0);
+
+  lightPositionElement.value = savedValue;
+  lightPositionValue.innerHTML = savedValue;
   gl.uniform4fv(
-    gl.getUniformLocation(program, "lightPosition"),
-    flatten(lightPosition)
+    gl.getUniformLocation(program, uniformVariable),
+    flatten(savedLightPosition)
   );
-};
+
+  lightPositionElement.addEventListener("input", () => {
+    const value = Number.parseFloat(lightPositionElement.value);
+    const lightPosition = vec4(value, 1.0, 1.0, 0.0);
+
+    params[selectedObject]["lightPosition"] = value;
+    lightPositionValue.innerHTML = value;
+
+    gl.uniform4fv(
+      gl.getUniformLocation(program, uniformVariable),
+      flatten(lightPosition)
+    );
+  });
+}
 
 // Function to get the ambient light
 document.getElementById("ambient-light").onchange = function () {
@@ -345,6 +364,9 @@ function resetNodesByName(name) {
 function initializeHandlers() {
   resetNodeById("shininess");
   handleShininess();
+
+  resetNodeById("light-position");
+  handleLightPosition();
 
   resetNodesByName("rotation-axes");
   resetNodeById("rotation");
