@@ -208,28 +208,37 @@ function handleDiffuseLight() {
   });
 }
 
-document.getElementById("diffuse-light").onchange = function () {
-  let x = document.getElementById("diffuse-light").value;
-  let lightDiffuse = vec4(x, x, 0.1, 1.0);
-  let diffuseProduct = mult(lightDiffuse, materialDiffuse);
-
-  gl.uniform4fv(
-    gl.getUniformLocation(program, "diffuseProduct"),
-    flatten(diffuseProduct)
-  );
-};
-
 // Function to get the specular light
-document.getElementById("specular-light").onchange = function () {
-  let x = document.getElementById("specular-light").value;
-  let lightSpecular = vec4(x, x, 0.1, 1.0);
-  let specularProduct = mult(lightSpecular, materialSpecular);
+function handleSpecularLight() {
+  let specularLightElement = document.getElementById("specular-light");
+  let specularLightValue = document.getElementById("specular-light-value");
 
+  const uniformVariable = lightingParams["specularProduct"][selectedObject];
+  const savedValue = params[selectedObject]["specularLight"];
+  const savedSpecularLight = vec4(savedValue, savedValue, 0.1, 1.0);
+  const savedSpecularProduct = mult(savedSpecularLight, materialSpecular);
+
+  specularLightElement.value = savedValue;
+  specularLightValue.innerHTML = savedValue;
   gl.uniform4fv(
-    gl.getUniformLocation(program, "specularProduct"),
-    flatten(specularProduct)
+    gl.getUniformLocation(program, uniformVariable),
+    flatten(savedSpecularProduct)
   );
-};
+
+  specularLightElement.addEventListener("input", () => {
+    const value = Number.parseFloat(specularLightElement.value);
+    const specularLight = vec4(value, value, 0.1, 1.0);
+    const specularProduct = mult(specularLight, materialSpecular);
+
+    params[selectedObject]["specularLight"] = value;
+    specularLightValue.innerHTML = value;
+
+    gl.uniform4fv(
+      gl.getUniformLocation(program, uniformVariable),
+      flatten(specularProduct)
+    );
+  });
+}
 
 // Get rotation axes
 function handleRotation() {
@@ -424,6 +433,9 @@ function initializeHandlers() {
 
   resetNodeById("diffuse-light");
   handleDiffuseLight();
+
+  resetNodeById("specular-light");
+  handleSpecularLight();
 
   resetNodesByName("rotation-axes");
   resetNodeById("rotation");
