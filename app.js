@@ -10,53 +10,74 @@ configureSphereTexture(sphereImage);
 configureTetraTexture(sphereImage);
 
 // Image for texture mapping
-// document.getElementById("Image1").onclick = function () {
-//   cubeImage = document.getElementById("cubeImage1");
-//   configureCubeTexture(cubeImage);
+function handleTexture() {
+  const images = {
+    1: "images/image1.jpg",
+    2: "images/image2.jpg",
+    3: "images/image3.jpg",
+    4: "images/image4.jpg",
+    5: "images/image5.jpg",
+    6: "images/image6.jpg",
+    7: "images/image7.jpg",
+    8: "images/image8.jpg",
+    9: "images/image9.jpg",
+  };
 
-//   sphereImage = document.getElementById("sphereImage1");
-//   configureSphereTexture(sphereImage);
-// };
+  let buttonsElement = document.getElementsByName("texture");
 
-// document.getElementById("Image2").onclick = function () {
-//   cubeImage = document.getElementById("cubeImage2");
-//   configureCubeTexture(cubeImage);
+  function isPowerOf2(value) {
+    return (value & (value - 1)) == 0;
+  }
 
-//   sphereImage = document.getElementById("sphereImage2");
-//   configureSphereTexture(sphereImage);
-// };
+  function loadImage(url) {
+    let image = document.createElement("img");
+    image.src = url;
 
-// document.getElementById("Image3").onclick = function () {
-//   cubeImage = document.getElementById("cubeImage3");
-//   configureCubeTexture(cubeImage);
+    image.onload = () => {
+      if (!isPowerOf2(image.width) || !isPowerOf2(image.height)) {
+        alert("The dimension of the texture is not power of 2.");
+        return;
+      }
 
-//   sphereImage = document.getElementById("sphereImage3");
-//   configureSphereTexture(sphereImage);
-// };
+      switch (selectedObject) {
+        case "sphere":
+          configureSphereTexture(image);
+          break;
+        case "cube":
+          configureCubeTexture(image);
+          break;
+        case "tetrahedron":
+          configureTetraTexture(image);
+          break;
+      }
+    };
+  }
 
-// document.getElementById("Image4").onclick = function () {
-//   cubeImage = document.getElementById("cubeImage4");
-//   configureCubeTexture(cubeImage);
+  for (let buttonElement of buttonsElement) {
+    buttonElement.addEventListener("click", () => {
+      if (buttonElement.value == "custom") {
+        let file = document.createElement("input");
+        file.type = "file";
+        file.click();
 
-//   sphereImage = document.getElementById("sphereImage4");
-//   configureSphereTexture(sphereImage);
-// };
+        const reader = new FileReader();
 
-// document.getElementById("Image5").onclick = function () {
-//   cubeImage = document.getElementById("cubeImage5");
-//   configureCubeTexture(cubeImage);
+        file.addEventListener("change", () => {
+          console.log(file.files[0]);
+          reader.readAsDataURL(file.files[0]);
+        });
 
-//   sphereImage = document.getElementById("sphereImage5");
-//   configureSphereTexture(sphereImage);
-// };
+        reader.addEventListener("load", () => {
+          loadImage(reader.result);
+        });
 
-// document.getElementById("Image6").onclick = function () {
-//   cubeImage = document.getElementById("cubeImage6");
-//   configureCubeTexture(cubeImage);
+        return;
+      }
 
-//   sphereImage = document.getElementById("sphereImage6");
-//   configureSphereTexture(sphereImage);
-// };
+      loadImage(images[buttonElement.value]);
+    });
+  }
+}
 
 let params = {
   sphere: sphereParams,
@@ -422,6 +443,9 @@ function resetNodesByName(name) {
 }
 
 function initializeHandlers() {
+  resetNodesByName("texture");
+  handleTexture();
+
   resetNodeById("shininess");
   handleShininess();
 
