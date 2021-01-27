@@ -177,6 +177,37 @@ function handleAmbientLight() {
 }
 
 // Function to get the diffuse light
+function handleDiffuseLight() {
+  let diffuseLightElement = document.getElementById("diffuse-light");
+  let diffuseLightValue = document.getElementById("diffuse-light-value");
+
+  const uniformVariable = lightingParams["diffuseProduct"][selectedObject];
+  const savedValue = params[selectedObject]["diffuseLight"];
+  const savedDiffuseLight = vec4(savedValue, savedValue, 0.1, 1.0);
+  const savedDiffuseProduct = mult(savedDiffuseLight, materialDiffuse);
+
+  diffuseLightElement.value = savedValue;
+  diffuseLightValue.innerHTML = savedValue;
+  gl.uniform4fv(
+    gl.getUniformLocation(program, uniformVariable),
+    flatten(savedDiffuseProduct)
+  );
+
+  diffuseLightElement.addEventListener("input", () => {
+    const value = Number.parseFloat(diffuseLightElement.value);
+    const diffuseLight = vec4(value, value, 0.1, 1.0);
+    const diffuseProduct = mult(diffuseLight, materialDiffuse);
+
+    params[selectedObject]["diffuseLight"] = value;
+    diffuseLightValue.innerHTML = value;
+
+    gl.uniform4fv(
+      gl.getUniformLocation(program, uniformVariable),
+      flatten(diffuseProduct)
+    );
+  });
+}
+
 document.getElementById("diffuse-light").onchange = function () {
   let x = document.getElementById("diffuse-light").value;
   let lightDiffuse = vec4(x, x, 0.1, 1.0);
@@ -390,6 +421,9 @@ function initializeHandlers() {
 
   resetNodeById("ambient-light");
   handleAmbientLight();
+
+  resetNodeById("diffuse-light");
+  handleDiffuseLight();
 
   resetNodesByName("rotation-axes");
   resetNodeById("rotation");
