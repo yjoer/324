@@ -136,6 +136,7 @@ let params = {
 };
 
 let lightingParams = {
+  model: "blinn-phong",
   shininess: {
     sphere: "shininess2",
     cube: "shininess1",
@@ -162,6 +163,28 @@ let lightingParams = {
     tetrahedron: "specularProduct3",
   },
 };
+
+function handleLightingModel() {
+  let lightingModelElement = document.getElementById("lighting-model");
+
+  function updateLightingModel(value) {
+    if (value == "phong") {
+      gl.uniform1i(gl.getUniformLocation(program, "lightingModel"), 0);
+    } else if (value == "blinn-phong") {
+      gl.uniform1i(gl.getUniformLocation(program, "lightingModel"), 1);
+    }
+  }
+
+  lightingModelElement.value = lightingParams.model;
+  updateLightingModel(lightingParams.model);
+
+  lightingModelElement.addEventListener("input", () => {
+    const value = lightingModelElement.value;
+
+    lightingParams.model = value;
+    updateLightingModel(value);
+  });
+}
 
 // Function to get the material shininess
 function handleShininess() {
@@ -501,6 +524,8 @@ function initializeHandlers() {
 
   resetNodeById("texture-magnification");
   handleMagnificationFilter();
+
+  handleLightingModel();
 
   resetNodeById("shininess");
   handleShininess();
