@@ -75,20 +75,20 @@ let lightingParams = {
     cube: "lightPosition1",
     tetrahedron: "lightPosition3",
   },
-  ambientLight: {
-    sphere: "ambientLight2",
-    cube: "ambientLight1",
-    tetrahedron: "ambientLight3",
+  ambientProduct: {
+    sphere: "ambientProduct2",
+    cube: "ambientProduct1",
+    tetrahedron: "ambientProduct3",
   },
-  diffuseLight: {
-    sphere: "diffuseLight2",
-    cube: "diffuseLight1",
-    tetrahedron: "diffuseLight3",
+  diffuseProduct: {
+    sphere: "diffuseProduct2",
+    cube: "diffuseProduct1",
+    tetrahedron: "diffuseProduct3",
   },
-  specularLight: {
-    sphere: "specularLight2",
-    cube: "specularLight1",
-    tetrahedron: "specularLight3",
+  specularProduct: {
+    sphere: "specularProduct2",
+    cube: "specularProduct1",
+    tetrahedron: "specularProduct3",
   },
 };
 
@@ -145,16 +145,36 @@ function handleLightPosition() {
 }
 
 // Function to get the ambient light
-document.getElementById("ambient-light").onchange = function () {
-  let x = document.getElementById("ambient-light").value;
-  let lightAmbient = vec4(x, x, 0.1, 1.0);
-  let ambientProduct = mult(lightAmbient, materialAmbient);
+function handleAmbientLight() {
+  let ambientLightElement = document.getElementById("ambient-light");
+  let ambientLightValue = document.getElementById("ambient-light-value");
 
+  const uniformVariable = lightingParams["ambientProduct"][selectedObject];
+  const savedValue = params[selectedObject]["ambientLight"];
+  const savedAmbientLight = vec4(savedValue, savedValue, 0.1, 1.0);
+  const savedAmbientProduct = mult(savedAmbientLight, materialAmbient);
+
+  ambientLightElement.value = savedValue;
+  ambientLightValue.innerHTML = savedValue;
   gl.uniform4fv(
-    gl.getUniformLocation(program, "ambientProduct"),
-    flatten(ambientProduct)
+    gl.getUniformLocation(program, uniformVariable),
+    flatten(savedAmbientProduct)
   );
-};
+
+  ambientLightElement.addEventListener("input", () => {
+    const value = Number.parseFloat(ambientLightElement.value);
+    const ambientLight = vec4(value, value, 0.1, 1.0);
+    const ambientProduct = mult(ambientLight, materialAmbient);
+
+    params[selectedObject]["ambientLight"] = value;
+    ambientLightValue.innerHTML = value;
+
+    gl.uniform4fv(
+      gl.getUniformLocation(program, uniformVariable),
+      flatten(ambientProduct)
+    );
+  });
+}
 
 // Function to get the diffuse light
 document.getElementById("diffuse-light").onchange = function () {
@@ -367,6 +387,9 @@ function initializeHandlers() {
 
   resetNodeById("light-position");
   handleLightPosition();
+
+  resetNodeById("ambient-light");
+  handleAmbientLight();
 
   resetNodesByName("rotation-axes");
   resetNodeById("rotation");
