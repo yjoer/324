@@ -407,6 +407,10 @@ var render = function () {
     ),
     modelViewMatrix
   );
+  modelViewMatrix = mult(
+    scalem(...Object.values(cubeParams.scalingFactor)),
+    modelViewMatrix
+  );
 
   gl.uniform1i(gl.getUniformLocation(program, "texMode"), 0);
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
@@ -426,6 +430,10 @@ var render = function () {
       sphereParams.translationMagnitude.y,
       sphereParams.translationMagnitude.z
     ),
+    modelViewMatrix2
+  );
+  modelViewMatrix2 = mult(
+    scalem(...Object.values(sphereParams.scalingFactor)),
     modelViewMatrix2
   );
 
@@ -449,6 +457,10 @@ var render = function () {
       tetraParams.translationMagnitude.y,
       tetraParams.translationMagnitude.z
     ),
+    modelViewMatrix3
+  );
+  modelViewMatrix3 = mult(
+    scalem(...Object.values(tetraParams.scalingFactor)),
     modelViewMatrix3
   );
 
