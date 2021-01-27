@@ -58,42 +58,61 @@ configureTetraTexture(sphereImage);
 //   configureSphereTexture(sphereImage);
 // };
 
-// let shininess = {
-//   sphere: "shininess1",
-//   cube: "shininess2",
-//   tetrahedron: "shininess3",
-// };
+let params = {
+  sphere: sphereParams,
+  cube: cubeParams,
+  tetrahedron: tetraParams,
+};
 
-// let lightPosition = {
-//   sphere: "lightPosition1",
-//   cube: "lightPosition2",
-//   tetrahedron: "lightPosition3",
-// };
-
-// let ambientLight = {
-//   sphere: "ambientLight1",
-//   cube: "ambientLight2",
-//   tetrahedron: "ambientLight3",
-// };
-
-// let diffuseLight = {
-//   sphere: "diffuseLight1",
-//   cube: "diffuseLight2",
-//   tetrahedron: "diffuseLight3",
-// };
-
-// let specularLight = {
-//   sphere: "specularLight1",
-//   cube: "specularLight2",
-//   tetrahedron: "specularLight3",
-// };
+let lightingParams = {
+  shininess: {
+    sphere: "shininess2",
+    cube: "shininess1",
+    tetrahedron: "shininess3",
+  },
+  lightPosition: {
+    sphere: "lightPosition2",
+    cube: "lightPosition1",
+    tetrahedron: "lightPosition3",
+  },
+  ambientLight: {
+    sphere: "ambientLight2",
+    cube: "ambientLight1",
+    tetrahedron: "ambientLight3",
+  },
+  diffuseLight: {
+    sphere: "diffuseLight2",
+    cube: "diffuseLight1",
+    tetrahedron: "diffuseLight3",
+  },
+  specularLight: {
+    sphere: "specularLight2",
+    cube: "specularLight1",
+    tetrahedron: "specularLight3",
+  },
+};
 
 // Function to get the material shininess
-document.getElementById("shininess").onchange = function () {
-  let materialShininess = document.getElementById("shininess").value;
+function handleShininess() {
+  let shininessElement = document.getElementById("shininess");
+  let shininessValue = document.getElementById("shininess-value");
 
-  gl.uniform1f(gl.getUniformLocation(program, "shininess"), materialShininess);
-};
+  const uniformVariable = lightingParams["shininess"][selectedObject];
+  const savedValue = params[selectedObject]["shininess"];
+
+  shininessElement.value = savedValue;
+  shininessValue.innerHTML = savedValue;
+  gl.uniform1f(gl.getUniformLocation(program, uniformVariable), savedValue);
+
+  shininessElement.addEventListener("input", () => {
+    const value = Number.parseFloat(shininessElement.value);
+
+    params[selectedObject]["shininess"] = value;
+    shininessValue.innerHTML = value;
+
+    gl.uniform1f(gl.getUniformLocation(program, uniformVariable), value);
+  });
+}
 
 // Function to get the light position
 document.getElementById("light-position").onchange = function () {
@@ -142,12 +161,6 @@ document.getElementById("specular-light").onchange = function () {
   );
 };
 
-let params = {
-  sphere: sphereParams,
-  cube: cubeParams,
-  tetrahedron: tetraParams,
-};
-
 // Get rotation axes
 function handleRotation() {
   let rotationAxesElements = document.getElementsByName("rotation-axes");
@@ -173,16 +186,22 @@ function handleRotation() {
       case "x":
         if (params[selectedObject]["rotationAxes"][0] == 1) {
           rotationAxesElement.checked = true;
+        } else {
+          rotationAxesElement.checked = false;
         }
         break;
       case "y":
         if (params[selectedObject]["rotationAxes"][1] == 1) {
           rotationAxesElement.checked = true;
+        } else {
+          rotationAxesElement.checked = false;
         }
         break;
       case "z":
         if (params[selectedObject]["rotationAxes"][2] == 1) {
           rotationAxesElement.checked = true;
+        } else {
+          rotationAxesElement.checked = false;
         }
         break;
     }
@@ -308,9 +327,35 @@ function handleScaling() {
   });
 }
 
+function resetNodeById(id) {
+  let oldElement = document.getElementById(id);
+  let newElement = oldElement.cloneNode(true);
+  oldElement.parentNode.replaceChild(newElement, oldElement);
+}
+
+function resetNodesByName(name) {
+  let oldElements = document.getElementsByName(name);
+
+  for (let oldElement of oldElements) {
+    let newElement = oldElement.cloneNode(true);
+    oldElement.parentNode.replaceChild(newElement, oldElement);
+  }
+}
+
 function initializeHandlers() {
+  resetNodeById("shininess");
+  handleShininess();
+
+  resetNodesByName("rotation-axes");
+  resetNodeById("rotation");
   handleRotation();
+
+  resetNodesByName("translation-axis");
+  resetNodeById("translation");
   handleTranslation();
+
+  resetNodesByName("scaling-axis");
+  resetNodeById("scaling");
   handleScaling();
 }
 

@@ -410,6 +410,11 @@ window.onload = function init() {
 };
 
 let paramsTemplate = {
+  shininess: 10,
+  lightPosition: 0,
+  ambientLight: 0,
+  diffuseLight: 0,
+  specularLight: 0,
   rotation: -3,
   rotationAngle: 0,
   rotationAxes: [1, 1, 1],
