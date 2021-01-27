@@ -23,15 +23,18 @@ var pointsArray = [];
 var colorsArray = [];
 var texCoordsArray = [];
 
-//Cube
+// Cube
 var cubeTexture; //variable to store texture of cube
 var numVertices = 36;
 
-//sphere
+// Sphere
 var numTimesToSubdivide = 4; //number of time of subdivision
 var sphereScale = 3; // decide image bitmap scale
 var sphereTexture; //variable to store texture of sphere
 var rotationSpeed = 3; //Rotation speed for sphere
+
+// Tetrahedron
+var tetraTexture;
 
 var texCoord = [vec2(0, 0), vec2(0, 1), vec2(1, 1), vec2(1, 0)];
 
@@ -64,6 +67,25 @@ function configureCubeTexture(image) {
 
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
   gl.uniform1i(gl.getUniformLocation(program, "cubeTexture"), 0);
+}
+
+// Function for texture mapping for tetrahedron
+function configureTetraTexture(image) {
+  tetraTexture = gl.createTexture();
+  gl.activeTexture(gl.TEXTURE0 + 2);
+  gl.bindTexture(gl.TEXTURE_2D, tetraTexture);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  gl.texParameteri(
+    gl.TEXTURE_2D,
+    gl.TEXTURE_MIN_FILTER,
+    gl.NEAREST_MIPMAP_LINEAR
+  );
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+
+  gl.uniform1i(gl.getUniformLocation(program, "tetraTexture"), 2);
 }
 
 function quad(a, b, c, d) {
@@ -292,10 +314,6 @@ window.onload = function init() {
   program = initShaders(gl, "vertex-shader", "fragment-shader");
   gl.useProgram(program);
 
-  let ambientProduct = mult(lightAmbient, materialAmbient);
-  let diffuseProduct = mult(lightDiffuse, materialDiffuse);
-  let specularProduct = mult(lightSpecular, materialSpecular);
-
   modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
   projectionMatrixLoc = gl.getUniformLocation(program, "projectionMatrix");
 
@@ -331,23 +349,57 @@ window.onload = function init() {
   gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vTexCoord);
 
-  gl.uniform4fv(
-    gl.getUniformLocation(program, "ambientProduct"),
-    flatten(ambientProduct)
-  );
-  gl.uniform4fv(
-    gl.getUniformLocation(program, "diffuseProduct"),
-    flatten(diffuseProduct)
-  );
-  gl.uniform4fv(
-    gl.getUniformLocation(program, "specularProduct"),
-    flatten(specularProduct)
-  );
-  gl.uniform4fv(
-    gl.getUniformLocation(program, "lightPosition"),
-    flatten(lightPosition)
-  );
-  gl.uniform1f(gl.getUniformLocation(program, "shininess"), materialShininess);
+  let ambientProduct = mult(lightAmbient, materialAmbient);
+  let diffuseProduct = mult(lightDiffuse, materialDiffuse);
+  let specularProduct = mult(lightSpecular, materialSpecular);
+
+  let lightingVariables = [
+    // Cube
+    "shininess1",
+    "lightPosition1",
+    "ambientProduct1",
+    "diffuseProduct1",
+    "specularProduct1",
+    // Sphere
+    "shininess2",
+    "lightPosition2",
+    "ambientProduct2",
+    "diffuseProduct2",
+    "specularProduct2",
+    // Tetrahedron
+    "shininess3",
+    "lightPosition3",
+    "ambientProduct3",
+    "diffuseProduct3",
+    "specularProduct3",
+  ];
+
+  for (let lightingVariable of lightingVariables) {
+    let data;
+
+    switch (lightingVariable.substring(0, 2)) {
+      case "sh":
+        data = materialShininess;
+        gl.uniform1f(gl.getUniformLocation(program, lightingVariable), data);
+        break;
+      case "li":
+        data = flatten(lightPosition);
+        gl.uniform4fv(gl.getUniformLocation(program, lightingVariable), data);
+        break;
+      case "am":
+        data = flatten(ambientProduct);
+        gl.uniform4fv(gl.getUniformLocation(program, lightingVariable), data);
+        break;
+      case "di":
+        data = flatten(diffuseProduct);
+        gl.uniform4fv(gl.getUniformLocation(program, lightingVariable), data);
+        break;
+      case "sp":
+        data = flatten(specularProduct);
+        gl.uniform4fv(gl.getUniformLocation(program, lightingVariable), data);
+        break;
+    }
+  }
 
   // Load procedures dependent on the user interface controls
   let script = document.createElement("script");
@@ -464,7 +516,7 @@ var render = function () {
     modelViewMatrix3
   );
 
-  gl.uniform1i(gl.getUniformLocation(program, "texMode"), 0);
+  gl.uniform1i(gl.getUniformLocation(program, "texMode"), 2);
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix3));
   for (
     let i = numVertices + sphereIndex;

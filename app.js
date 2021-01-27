@@ -7,6 +7,8 @@ configureCubeTexture(cubeImage);
 var sphereImage = document.getElementById("sphereImage1");
 configureSphereTexture(sphereImage);
 
+configureTetraTexture(sphereImage);
+
 // Image for texture mapping
 // document.getElementById("Image1").onclick = function () {
 //   cubeImage = document.getElementById("cubeImage1");
